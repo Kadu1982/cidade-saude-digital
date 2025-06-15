@@ -4,7 +4,7 @@ const WebhookTestButton: React.FC = () => {
   const enviarParaN8N = async () => {
     try {
       const response = await fetch(
-        "fetch('http://localhost:5678/webhook/inserir-usuario', {\n",
+        `${import.meta.env.VITE_API_BASE_URL}/webhook/inserir-usuario`,
         {
           method: "POST",
           headers: {
