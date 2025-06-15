@@ -2,20 +2,11 @@
 
 import axios from 'axios';
 
-const apiService = axios.create({
-    baseURL: 'http://localhost:5011/api', // Padronizado com /api
-    headers: {
-        'Content-Type': 'application/json',
-    },
-});// src/services/apiService.ts
-
-import axios from 'axios';
-
-const apiService = axios.create({
-    baseURL: 'http://localhost:5011/api', // Padronizado com /api
-    headers: {
-        'Content-Type': 'application/json',
-    },
+export const apiService = axios.create({
+  baseURL: `${import.meta.env.VITE_API_BASE_URL}/api`,
+  headers: {
+    'Content-Type': 'application/json',
+  },
 });
 
 // Interceptor para adicionar token JWT automaticamente

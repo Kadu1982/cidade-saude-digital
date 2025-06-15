@@ -47,7 +47,7 @@ export const IdentificacaoMunicipe: React.FC<IdentificacaoProps> = ({
   const atualizarDadosContato = async (usuarioId: string) => {
     try {
       const response = await fetch(
-        `http://localhost:5000/api/usuarios/${usuarioId}/contato`,
+        `${import.meta.env.VITE_API_BASE_URL}/api/usuarios/${usuarioId}/contato`,
         {
           method: "PATCH",
           headers: {
@@ -90,7 +90,7 @@ export const IdentificacaoMunicipe: React.FC<IdentificacaoProps> = ({
   const buscarUsuarioPorBiometria = async (templateId: string) => {
     try {
       const response = await fetch(
-        `http://localhost:5000/api/biometria/ler/${templateId}`,
+        `${import.meta.env.VITE_API_BASE_URL}/api/biometria/ler/${templateId}`,
       );
       const data = await response.json();
 
@@ -110,7 +110,7 @@ export const IdentificacaoMunicipe: React.FC<IdentificacaoProps> = ({
         // 🔎 Verifica agendamento ativo
         try {
           const agendamentoResp = await fetch(
-            `http://localhost:5000/api/agendamentos/ativo/${data.usuario.id}`,
+            `${import.meta.env.VITE_API_BASE_URL}/api/agendamentos/ativo/${data.usuario.id}`,
           );
           const agendamentoData = await agendamentoResp.json();
 
