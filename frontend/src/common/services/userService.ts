@@ -1,7 +1,7 @@
 // src/common/services/userService.ts
 // Serviço de usuário real via API do backend
 
-import apiService from "@/lib/api";
+import apiService from "@/services/apiService";
 
 export type User = {
   id: string;

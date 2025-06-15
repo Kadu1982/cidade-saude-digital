@@ -14,7 +14,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useOperador } from '@/contexts/OperadorContext';
-import apiService from '@/lib/api';
+import apiService from '@/services/apiService';
 
 export default function Login() {
   const [usuario, setUsuario] = useState('');
