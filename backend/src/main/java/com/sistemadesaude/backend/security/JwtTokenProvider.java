@@ -1,39 +1,33 @@
 package com.sistemadesaude.backend.security;
 
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import io.jsonwebtoken.security.SignatureException; // Import específico para erros de assinatura
-import org.slf4j.Logger; // Para logging
-import org.slf4j.LoggerFactory; // Para logging
+import jakarta.annotation.PostConstruct;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import jakarta.annotation.PostConstruct; // Para inicializar a chave
 import java.security.Key;
 import java.util.Date;
 import java.util.List;
-import java.util.Base64; // Para codificar a secret se necessário
 
 @Component
 public class JwtTokenProvider {
 
     private static final Logger logger = LoggerFactory.getLogger(JwtTokenProvider.class);
 
-    @Value("${jwt.secret}")
-    private String jwtSecretString; // Renomeado para clareza
-
     @Value("${jwt.expiration}")
-    private Long jwtExpirationMs; // Renomeado para clareza e para indicar milissegundos
+    private Long jwtExpirationMs;
 
     private Key signingKey;
 
-    @PostConstruct // Garante que a chave seja inicializada após a injeção de dependências
+    @PostConstruct
     public void init() {
-        // Decodificar a secret se ela estiver em Base64 no application.properties
-        // byte[] keyBytes = Base64.getDecoder().decode(jwtSecretString);
-        // this.signingKey = Keys.hmacShaKeyFor(keyBytes);
-        // Se a secret for uma string simples (não recomendável para produção forte):
-        this.signingKey = Keys.hmacShaKeyFor(jwtSecretString.getBytes());
+        // Gera uma chave segura para o algoritmo HS512
+        this.signingKey = Keys.secretKeyFor(SignatureAlgorithm.HS512);
     }
 
     public String generateToken(String username, List<String> roles) {
@@ -42,10 +36,10 @@ public class JwtTokenProvider {
 
         return Jwts.builder()
                 .setSubject(username)
-                .claim("roles", roles) // Adiciona os perfis como uma claim
+                .claim("roles", roles)
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
-                .signWith(signingKey, SignatureAlgorithm.HS256) // HS256 é comum, mas considere algoritmos mais fortes para produção crítica
+                .signWith(signingKey, SignatureAlgorithm.HS512)
                 .compact();
     }
 
@@ -53,16 +47,8 @@ public class JwtTokenProvider {
         try {
             Jwts.parserBuilder().setSigningKey(signingKey).build().parseClaimsJws(authToken);
             return true;
-        } catch (SignatureException ex) {
-            logger.error("Assinatura JWT inválida: {}", ex.getMessage());
-        } catch (MalformedJwtException ex) {
-            logger.error("Token JWT malformado: {}", ex.getMessage());
-        } catch (ExpiredJwtException ex) {
-            logger.error("Token JWT expirado: {}", ex.getMessage());
-        } catch (UnsupportedJwtException ex) {
-            logger.error("Token JWT não suportado: {}", ex.getMessage());
-        } catch (IllegalArgumentException ex) {
-            logger.error("Claims JWT vazias ou argumento ilegal: {}", ex.getMessage());
+        } catch (Exception ex) {
+            logger.error("Invalid JWT token: {}", ex.getMessage());
         }
         return false;
     }
@@ -76,14 +62,13 @@ public class JwtTokenProvider {
         return claims.getSubject();
     }
 
-    @SuppressWarnings("unchecked") // Para o cast de List<String>
-    public List<String> getRolesFromToken(String token) { // Nome do método alterado para clareza
+    @SuppressWarnings("unchecked")
+    public List<String> getRolesFromToken(String token) {
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(signingKey)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
-        // As roles são armazenadas como uma claim. Certifique-se de que o nome "roles" corresponde ao usado em generateToken.
         return claims.get("roles", List.class);
     }
 }

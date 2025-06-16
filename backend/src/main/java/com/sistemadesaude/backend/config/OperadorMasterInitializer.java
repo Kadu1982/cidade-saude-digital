@@ -8,6 +8,7 @@ import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -20,17 +21,18 @@ public class OperadorMasterInitializer {
     private final PasswordEncoder passwordEncoder;
 
     @PostConstruct
+    @Transactional
     public void init() {
-        boolean operadorExiste = operadorRepository.existsByLogin("admin.master");
+        // Verifica se o operador master já existe para não recriá-lo
+        if (!operadorRepository.existsByLogin("admin.master")) {
 
-        if (!operadorExiste) {
-            // 1. Primeiro criar uma unidade de saúde padrão
+            // 1. Garante que a unidade de saúde padrão exista
             UnidadeSaude unidadePadrao = criarOuBuscarUnidadePadrao();
 
-            // 2. Depois criar o operador master
+            // 2. Cria o operador master com a senha codificada
             Operador operador = Operador.builder()
                     .login("admin.master")
-                    .senha(passwordEncoder.encode("Admin@123"))
+                    .senha(passwordEncoder.encode("Admin@123")) // Senha criptografada
                     .nome("Administrador Master")
                     .cargo("Administrador do Sistema")
                     .cpf("00000000000")
@@ -41,6 +43,7 @@ public class OperadorMasterInitializer {
                     .build();
 
             operadorRepository.save(operador);
+
             System.out.println(">>> Operador master criado com sucesso.");
             System.out.println(">>> Login: admin.master");
             System.out.println(">>> Senha: Admin@123");
@@ -48,10 +51,9 @@ public class OperadorMasterInitializer {
     }
 
     private UnidadeSaude criarOuBuscarUnidadePadrao() {
-        // Buscar se já existe uma unidade padrão
+        // Busca a unidade padrão pelo código CNES ou a cria se não existir
         return unidadeSaudeRepository.findByCodigoCnes("0000001")
                 .orElseGet(() -> {
-                    // Se não existir, criar uma nova
                     UnidadeSaude unidade = UnidadeSaude.builder()
                             .nome("Unidade de Saúde Padrão")
                             .codigoCnes("0000001")

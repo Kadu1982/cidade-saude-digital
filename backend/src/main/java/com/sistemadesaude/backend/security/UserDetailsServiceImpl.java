@@ -17,10 +17,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         Operador operador = operadorRepository.findByLogin(login)
                 .orElseThrow(() -> new UsernameNotFoundException("Operador não encontrado: " + login));
 
-        return org.springframework.security.core.userdetails.User.builder()
-                .username(operador.getLogin())
-                .password(operador.getSenha())
-                .roles(operador.getPerfis().toArray(new String[0]))
-                .build();
+        // Agora, simplesmente retornamos a nossa implementação customizada de UserDetails
+        return new UserDetailsImpl(operador);
     }
 }

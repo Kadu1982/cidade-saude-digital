@@ -1,46 +1,15 @@
-// src/services/apiService.ts
+// Importa o Axios, biblioteca HTTP
+import axios from 'axios'
 
-import axios from 'axios';
-
+// Cria uma instância reutilizável do Axios
 const apiService = axios.create({
-    baseURL: 'http://localhost:5011/api', // Padronizado com /api
+    baseURL: 'http://localhost:5011/api', // URL base do backend (ajustar se necessário)
     headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json' // Define o tipo de conteúdo padrão como JSON
     },
-});// src/services/apiService.ts
+    timeout: 10000, // Limite de tempo para requisições (10 segundos)
+    withCredentials: false // Não envia cookies por padrão (ajustar se backend usar sessões)
+})
 
-import axios from 'axios';
-
-const apiService = axios.create({
-    baseURL: 'http://localhost:5011/api', // Padronizado com /api
-    headers: {
-        'Content-Type': 'application/json',
-    },
-});
-
-// Interceptor para adicionar token JWT automaticamente
-apiService.interceptors.request.use(
-    (config) => {
-        const token = localStorage.getItem('authToken'); // Padronizado para authToken
-        if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
-        }
-        return config;
-    },
-    (error) => Promise.reject(error)
-);
-
-// Interceptor de resposta para capturar erro 401 e redirecionar
-apiService.interceptors.response.use(
-    (response) => response,
-    (error) => {
-        if (error.response && error.response.status === 401) {
-            localStorage.removeItem('authToken');
-            localStorage.removeItem('operadorData');
-            window.location.href = '/login';
-        }
-        return Promise.reject(error);
-    }
-);
-
-export default apiService;
+// Exporta a instância para ser usada em qualquer serviço/função
+export default apiService

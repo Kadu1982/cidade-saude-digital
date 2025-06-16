@@ -1,22 +1,20 @@
-// src/lib/api.ts
-
 import axios from 'axios';
 
 const apiService = axios.create({
-  baseURL: 'http://localhost:5011/api',
-  headers: {
-    'Content-Type': 'application/json',
-  },
+    baseURL: '/api',
+    headers: {
+        'Content-Type': 'application/json',
+    },
 });
 
 // Interceptor para adicionar token JWT automaticamente
 apiService.interceptors.request.use(
     (config) => {
-      const token = localStorage.getItem('token');
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-      }
-      return config;
+        const token = localStorage.getItem('token');
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+        }
+        return config;
     },
     (error) => Promise.reject(error)
 );
@@ -25,12 +23,12 @@ apiService.interceptors.request.use(
 apiService.interceptors.response.use(
     (response) => response,
     (error) => {
-      if (error.response && error.response.status === 401) {
-        localStorage.removeItem('token');
-        localStorage.removeItem('operador');
-        window.location.href = '/login'; // Redireciona para tela de login
-      }
-      return Promise.reject(error);
+        if (error.response && error.response.status === 401) {
+            localStorage.removeItem('token');
+            localStorage.removeItem('operador');
+            window.location.href = '/login'; // Redireciona para tela de login
+        }
+        return Promise.reject(error);
     }
 );
 

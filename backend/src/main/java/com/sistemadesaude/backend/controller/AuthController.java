@@ -14,7 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/api/auth") // CORRIGIDO: Removido o "/login" daqui
 @RequiredArgsConstructor
 public class AuthController {
 
@@ -24,7 +24,7 @@ public class AuthController {
     private final PasswordEncoder passwordEncoder;
 
 
-    @PostMapping("/login")
+    @PostMapping("/login") // MANTIDO: O endpoint de login agora é /api/auth/login
     public ResponseEntity<?> login(@RequestBody @Valid LoginRequest request) {
         System.out.println(">>> Requisição de login recebida: " + request.getLogin());
 

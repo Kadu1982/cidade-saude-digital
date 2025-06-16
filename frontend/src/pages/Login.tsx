@@ -28,10 +28,14 @@ export default function Login() {
     setError('');
 
     try {
-      const response = await apiService.post('/operadores/login', {
+      // **INÍCIO DA CORREÇÃO**
+      // A URL correta não deve incluir o prefixo /api, pois ele já é
+      // configurado na instância do 'apiService' (axios).
+      const response = await apiService.post('/auth/login', {
         login: usuario,
         senha: senha,
       });
+      // **FIM DA CORREÇÃO**
 
       const { token, operador } = response.data;
       login(token, operador);
@@ -44,9 +48,12 @@ export default function Login() {
         navigate('/dashboard');
       }
 
-    } catch (err) {
-      setError('Usuário ou senha inválidos');
-      console.error('Erro no login:', err);
+    } catch (err: any) {
+      const serverError = err.response?.data;
+      const errorMessage = serverError?.message || serverError?.error || 'Usuário ou senha inválidos.';
+
+      setError(errorMessage);
+      console.error('Erro detalhado no login:', serverError || err);
     }
   };
 

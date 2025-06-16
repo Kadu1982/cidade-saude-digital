@@ -2,10 +2,12 @@ package com.sistemadesaude.backend.security;
 
 import com.sistemadesaude.backend.model.Operador;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.stream.Collectors;
 
 public class UserDetailsImpl implements UserDetails {
 
@@ -17,8 +19,14 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // Adapte isso se quiser usar perfis como ROLE_ADMIN, etc.
-        return Collections.emptyList();
+        // Converte a lista de perfis (String) para uma coleção de GrantedAuthority
+        // Adiciona o prefixo "ROLE_" que o Spring Security usa por padrão
+        if (operador.getPerfis() == null) {
+            return Collections.emptyList();
+        }
+        return operador.getPerfis().stream()
+                .map(perfil -> new SimpleGrantedAuthority("ROLE_" + perfil))
+                .collect(Collectors.toList());
     }
 
     @Override

@@ -12,7 +12,7 @@ export const IdentificacaoMunicipe: React.FC<IdentificacaoProps> = ({
 }) => {
   const [nome, setNome] = useState("");
   const [cpf, setCpf] = useState("");
-  const [sugestoes, setSugestoes] = useState<
+  const [, setSugestoes] = useState<
     Array<{ id: string; nome: string }>
   >([]);
   const [carregandoBiometria, setCarregandoBiometria] = useState(false);

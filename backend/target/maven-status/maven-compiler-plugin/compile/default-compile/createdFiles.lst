@@ -15,6 +15,7 @@ com\sistemadesaude\backend\controller\UnidadeSaudeController.class
 com\sistemadesaude\backend\exception\GlobalExceptionHandler.class
 com\sistemadesaude\backend\service\BiometriaService.class
 com\sistemadesaude\backend\service\OperadorService.class
+com\sistemadesaude\backend\controller\MonitoringController.class
 com\sistemadesaude\backend\dto\PacienteDTO$PacienteDTOBuilder.class
 com\sistemadesaude\backend\model\UnidadeSaude$UnidadeSaudeBuilder.class
 com\sistemadesaude\backend\BackendApplication.class
@@ -45,6 +46,7 @@ com\sistemadesaude\backend\repository\OperadorRepository.class
 com\sistemadesaude\backend\model\Agendamento.class
 com\sistemadesaude\backend\dto\OperadorDTO$OperadorDTOBuilder.class
 com\sistemadesaude\backend\dto\RegistroRequest.class
+com\sistemadesaude\backend\service\MonitoringService.class
 com\sistemadesaude\backend\dto\UnidadeSaudeDTO.class
 com\sistemadesaude\backend\mapper\UnidadeSaudeMapper.class
 com\sistemadesaude\backend\controller\AgendamentoController.class
