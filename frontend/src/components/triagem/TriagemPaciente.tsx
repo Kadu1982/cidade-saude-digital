@@ -31,6 +31,7 @@ import {
   User,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { registrarTriagem } from "@/services/triagemService";
 
 interface DadosTriagem {
   pressaoArterial: string;
@@ -86,8 +87,13 @@ export const TriagemPaciente: React.FC = () => {
     },
   ];
 
-  const handleFinalizarTriagem = () => {
+  const handleFinalizarTriagem = async () => {
     if (!pacienteSelecionado) return;
+
+    await registrarTriagem({
+      pacienteId: pacienteSelecionado.id,
+      ...dadosTriagem,
+    });
 
     toast({
       title: "Triagem Concluída",
